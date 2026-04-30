@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Rapido_BusinessEntities\Rapido_BusinessEntities.csproj" />
     <ProjectReference Include="..\Rapido_Repositorylayer\Rapido_Repositorylayer.csproj" />
   </ItemGroup>

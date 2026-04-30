@@ -1,4 +1,5 @@
-﻿using Rapido_BusinessEntities.Dtos;
+﻿using AutoMapper;
+using Rapido_BusinessEntities.Dtos;
 using Rapido_BusinessEntities.Interfaces;
 using Rapido_BusinessEntities.Models;
 using System;
@@ -12,15 +13,17 @@ namespace Rapido_ServiceLayer
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            this._mapper = mapper;
         }
         public async Task<UserSignInResponse> UserSignIn(UserSignInDto userDetailDto)
         {
             UserSignIn usi = new UserSignIn();
-            usi.UserName = userDetailDto.UserName;
-            usi.Password = userDetailDto.Password;
+            _mapper.Map(userDetailDto, usi);
+
             var res = await _userRepository.UserSignIn(usi);
             return res;
         }
@@ -28,10 +31,7 @@ namespace Rapido_ServiceLayer
         public async Task<UserSignUpResponse> UserSignUp(UserSignUpDto userDetailDto)
         {
             UserSignUp usi = new UserSignUp();
-            usi.FullName = userDetailDto.FullName;
-            usi.Username = userDetailDto.Username;
-            usi.Email = userDetailDto.Email;
-            usi.Password = userDetailDto.Password;
+            _mapper.Map(userDetailDto, usi);
             var res = await _userRepository.UserSignUp(usi);
             return res;
         }

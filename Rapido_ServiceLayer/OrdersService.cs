@@ -1,4 +1,5 @@
-﻿using Rapido_BusinessEntities.Dtos;
+﻿using AutoMapper;
+using Rapido_BusinessEntities.Dtos;
 using Rapido_BusinessEntities.Interfaces;
 using Rapido_BusinessEntities.Models;
 using System;
@@ -12,14 +13,18 @@ namespace Rapido_ServiceLayer
     public class OrdersService : IOrdersService
     {
         private readonly IOrdersRepository _ordersRepository;
-        public OrdersService(IOrdersRepository ordersRepository)
+        private readonly IMapper _mapper;
+        public OrdersService(IOrdersRepository ordersRepository, IMapper mapper)
         {
             _ordersRepository = ordersRepository;
+            this._mapper = mapper;
         }
         public async Task<int> AddOrder(OrdersDto orderdetail)
         {
             Orders order = new Orders();
-            order.orderid = orderdetail.orderid;
+            _mapper.Map(orderdetail, order);
+
+            //order.orderid = orderdetail.orderid;
             if (orderdetail?.Flag == "Hyderabad")//Here Flag is used to apply the conditions.based on condition we are perming the opertions.
             {
                 order.ordername = orderdetail.ordername + '-' + orderdetail.orderlocation;
@@ -29,7 +34,7 @@ namespace Rapido_ServiceLayer
                 order.ordername = orderdetail.ordername;
             }
 
-            order.orderlocation = orderdetail.orderlocation;
+            //order.orderlocation = orderdetail.orderlocation;
             //to pass the data to repository we are not pass the falg value,falg is used to check the condition purpose only
             var res = await _ordersRepository.AddOrder(order);
             return res;
@@ -46,11 +51,7 @@ namespace Rapido_ServiceLayer
         public async Task<OrdersDto> GetOrderById(int orderid)
         {
             var res = await _ordersRepository.GetOrderById(orderid);
-            OrdersDto orderdto = new OrdersDto();
-            orderdto.orderid = res.orderid;
-            orderdto.ordername = res.ordername;
-            orderdto.orderlocation = res.orderlocation;
-            return orderdto;
+            return _mapper.Map<OrdersDto>(res);
 
         }
 
@@ -58,25 +59,13 @@ namespace Rapido_ServiceLayer
         {
             List<OrdersDto> lstorderdto = new List<OrdersDto>();
             var res = await _ordersRepository.GetOrders();
-            foreach (Orders order in res)
-            {
-                OrdersDto ordersDto = new OrdersDto();
-                ordersDto.orderid = order.orderid;
-                ordersDto.ordername = order.ordername;
-                ordersDto.orderlocation = order.orderlocation;
-                lstorderdto.Add(ordersDto);//Add the orders to list here
-
-            }
-            return lstorderdto;
-
+            return _mapper.Map<List<OrdersDto>>(res);
         }
 
         public async Task<string> UpdateOrder(OrdersDto orderdetail)
         {
             Orders obj = new Orders();
-            obj.orderid = orderdetail.orderid;
-            obj.ordername = orderdetail.ordername;
-            obj.orderlocation = orderdetail.orderlocation;
+            _mapper.Map(orderdetail, obj);
             var res = await _ordersRepository.UpdateOrder(obj);
             return res;
 

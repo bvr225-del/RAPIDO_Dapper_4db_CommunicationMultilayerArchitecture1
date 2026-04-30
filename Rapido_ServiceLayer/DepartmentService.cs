@@ -1,4 +1,5 @@
-﻿using Rapido_BusinessEntities.Dtos;
+﻿using AutoMapper;
+using Rapido_BusinessEntities.Dtos;
 using Rapido_BusinessEntities.Interfaces;
 using Rapido_BusinessEntities.Models;
 using System;
@@ -12,17 +13,22 @@ namespace Rapido_ServiceLayer
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentRepository _departmentRepository;
-        public DepartmentService(IDepartmentRepository departmentRepository)
+        private readonly IMapper _mapper;
+        //Don't create dirrect object of repository class here
+        //create the onstructor of this service class and inject the repository interface into the constructor and assign it to the private readonly field of the repository interface type.
+
+        //constructor injection
+        public DepartmentService(IDepartmentRepository departmentRepository, IMapper mapper)
         {
             _departmentRepository = departmentRepository;
+            this._mapper = mapper;
         }
         public async Task<int> AddDepartment(DepartmentDto deptdetail)
         {
-            Department objDept = new Department();
-            objDept.deptname = deptdetail.deptname;
-            objDept.deptlocation = deptdetail.deptlocation;
-            objDept.deptid = deptdetail.deptid;
-            var res = await _departmentRepository.AddDepartment(objDept);
+            //In future this code was replaced by automapper conncept.
+            Department dept = new Department();
+            _mapper.Map(deptdetail, dept);
+            var res = await _departmentRepository.AddDepartment(dept);
             return res;
 
         }
@@ -37,38 +43,22 @@ namespace Rapido_ServiceLayer
         public async Task<DepartmentDto> GetDepartmentById(int deptid)
         {
             var res = await _departmentRepository.GetDepartmentById(deptid);
-            DepartmentDto deptdto = new DepartmentDto();
-            deptdto.deptid = res.deptid;
-            deptdto.deptname = res.deptname;
-            deptdto.deptlocation = res.deptlocation;
-            return deptdto;
+            return _mapper.Map<DepartmentDto>(res);
 
         }
 
         public async Task<List<DepartmentDto>> GetDepartments()
         {
-            List<DepartmentDto> lstempdto = new List<DepartmentDto>();
             var res = await _departmentRepository.GetDepartments();
-            foreach (Department dept in res)
-            {
-                DepartmentDto deptdto = new DepartmentDto();
-                deptdto.deptid = dept.deptid;
-                deptdto.deptname = dept.deptname;
-                deptdto.deptlocation = dept.deptlocation;
-                lstempdto.Add(deptdto);
-
-            }
-            return lstempdto;
+            return _mapper.Map<List<DepartmentDto>>(res);
 
         }
 
         public async Task<string> UpdateDepartment(DepartmentDto deptdetail)
         {
-            Department objDept = new Department();
-            objDept.deptid = deptdetail.deptid;
-            objDept.deptname = deptdetail.deptname;
-            objDept.deptlocation = deptdetail.deptlocation;
-            var result = await _departmentRepository.UpdateDepartment(objDept);
+            Department dept = new Department();
+            _mapper.Map(deptdetail, dept);
+          string result =  await _departmentRepository.UpdateDepartment(dept);
             return result;
 
         }
