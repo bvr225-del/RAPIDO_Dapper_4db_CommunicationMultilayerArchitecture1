@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Rapido_BusinessEntities\Rapido_BusinessEntities.csproj" />
+    <ProjectReference Include="..\Rapido_DbConnectivity\Rapido_DbConnectivity.csproj" />
+  </ItemGroup>
+
 </Project>
