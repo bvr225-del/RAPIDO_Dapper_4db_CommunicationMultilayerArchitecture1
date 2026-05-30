@@ -12,8 +12,8 @@ namespace Rapido_BusinessEntities.Interfaces
         Task<List<EmployeeDto>> GetEmployees();
         Task<EmployeeDto> GetEmployeeById(int empid);
         Task<int> AddEmployees(EmployeeDto empdetail);
-        Task<bool> DeleteEmployeeById(int empid);
-        Task<bool> UpdateEmployee(EmployeeDto empdetail);
+        Task<string> DeleteEmployeeById(int empid);
+        Task<string> UpdateEmployee(EmployeeDto empdetail);
 
     }
 }

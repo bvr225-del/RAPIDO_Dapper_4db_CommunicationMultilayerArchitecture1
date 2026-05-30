@@ -44,7 +44,8 @@ namespace Rapido_Repositorylayer
                 Orders order = result.FirstOrDefault();
                 if (order == null)
                 {
-                    return $"order with id {orderid} not found.";
+                    return $"order id {orderid} does not exist in database.";
+                   
                 }
                 else
                 {
@@ -94,7 +95,7 @@ namespace Rapido_Repositorylayer
                 Orders order = result.FirstOrDefault();
                 if (order == null)
                 {
-                    return $"order with id {orderdetail.orderid} not found.";
+                    return $"order  id {orderdetail.orderid} does not exist in database.";
                 }
                 else
                 {

@@ -38,14 +38,26 @@ namespace Rapido_Repositorylayer
 
         }
 
-        public async Task<bool> DeleteEmployeeById(int empid)
+        public async Task<string> DeleteEmployeeById(int empid)
         {
             using (IDbConnection con = _connectionFactory.HotelmanagementsqlConnectionString())
             {
                 DynamicParameters p = new DynamicParameters();
                 p.Add(StoredprocedureParameters.EmployeeID, empid);
-                await con.ExecuteScalarAsync(StoredprocedureNames.DeleteEmployee, p, commandType: CommandType.StoredProcedure);
-                return true;
+               var result=  await con.QueryAsync<Employee>(StoredprocedureNames.DeleteEmployee, p, commandType: CommandType.StoredProcedure);
+                Employee emp=result.FirstOrDefault();
+                if (emp==null)
+                {
+                    return $"emp Id{empid} does not exist in database. " ;
+                }
+                else
+                {
+                    var empData= $"emp Id {emp.empid} with emp name {emp.empname} and emp salary {emp.empsalary} is deleted from database.";
+                    await con.ExecuteScalarAsync(StoredprocedureNames.DeleteEmployee, p, commandType: CommandType.StoredProcedure);
+                    return empData;
+                }
+
+
             }
 
         }
@@ -74,16 +86,28 @@ namespace Rapido_Repositorylayer
 
         }
 
-        public async Task<bool> UpdateEmployee(Employee empdetail)
+        public async Task<string> UpdateEmployee(Employee empdetail)
         {
             using (IDbConnection con = _connectionFactory.HotelmanagementsqlConnectionString())
             {
                 var p = new DynamicParameters();
                 p.Add(StoredprocedureParameters.EmployeeID, empdetail.empid);
-                p.Add(StoredprocedureParameters.EmployeeName, empdetail.empname);
-                p.Add(StoredprocedureParameters.EmployeeSalary, empdetail.empsalary);
-                await con.ExecuteReaderAsync(StoredprocedureNames.UpdateEmployee, p, commandType: CommandType.StoredProcedure);
-                return true;
+                var result = await con.QueryAsync(StoredprocedureNames.GetEmployeeByEmpid, p, commandType: CommandType.StoredProcedure);
+                Employee emp=result.FirstOrDefault();
+                if (emp==null)
+                {
+                    return $"emp Id {empdetail.empid} does not exist in database. ";
+                }
+                else
+                {
+                    var UpdatedData = $"Updated Employee: ID={empdetail.empid}, Name={empdetail.empname}, Salary={empdetail.empsalary}";
+                    var pu = new DynamicParameters();
+                    pu.Add(StoredprocedureParameters.EmployeeID, empdetail.empid);
+                    pu.Add(StoredprocedureParameters.EmployeeName, empdetail.empname);
+                    pu.Add(StoredprocedureParameters.EmployeeSalary, empdetail.empsalary);
+                    await con.ExecuteReaderAsync(StoredprocedureNames.UpdateEmployee, pu, commandType: CommandType.StoredProcedure);
+                    return UpdatedData;
+                }
             }
 
         }

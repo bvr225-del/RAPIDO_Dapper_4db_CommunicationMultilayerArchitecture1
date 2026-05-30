@@ -48,7 +48,7 @@ namespace RAPIDO_API.Controllers
             {
                 var restaurantData = await _restaurantService.DeleteRestaurantById(restaurantid);
 
-                if (restaurantData == null)
+                if (restaurantData.Contains("does not exist"))
                 {//in db if you get empty data we need to retrun this statuscode:Status404NotFound
                     return StatusCode(StatusCodes.Status404NotFound, "restaurantData not  found");
                 }
@@ -121,7 +121,7 @@ namespace RAPIDO_API.Controllers
                 else
                 {
                     var restaurantData = await _restaurantService.UpdateRestaurant(restaurantdto);
-                    if (restaurantData == null)
+                    if (restaurantData.Contains("does not exist"))
                     {
                         return StatusCode(StatusCodes.Status404NotFound, "restaurantData not found");
                     }

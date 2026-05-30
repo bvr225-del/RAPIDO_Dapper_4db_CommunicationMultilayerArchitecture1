@@ -44,7 +44,7 @@ namespace Rapido_Repositorylayer
                 Restaurant restaurant = result.FirstOrDefault();
                 if (restaurant == null)
                 {
-                    return $"restaurant with id {restaurantid} not found.";
+                    return $"restaurant  id {restaurantid} does not exist in database.";
                 }
                 else
                 {
@@ -93,7 +93,7 @@ namespace Rapido_Repositorylayer
                 Restaurant restaurant = result.FirstOrDefault();
                 if (restaurant == null)
                 {
-                    return $"restaurant with id {restaurantdetail.Id} not found.";
+                    return $"restaurant  id {restaurantdetail.Id} does not exist in database.";
                 }
                 else
                 {

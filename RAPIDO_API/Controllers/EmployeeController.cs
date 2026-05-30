@@ -46,7 +46,7 @@ namespace RAPIDO_API.Controllers
             try
             {
                 var empdata = await _employeeService.DeleteEmployeeById(empid);
-                if (empdata == null)
+                if (empdata.Contains("does not exist"))
                 {//in db if you get empty data we need to retrun this statuscode:Status404NotFound
                     return StatusCode(StatusCodes.Status404NotFound, "empdata not  found");
                 }
@@ -104,16 +104,22 @@ namespace RAPIDO_API.Controllers
         [Route("UpdateEmployee")]
         public async Task<IActionResult> put([FromBody] EmployeeDto empdto)
         {
-            try
-            {
                 if (!ModelState.IsValid)
                 {
 
                     return StatusCode(StatusCodes.Status400BadRequest, ModelState);
                 }
+            try
+            {
+                var empdata = await _employeeService.UpdateEmployee(empdto);
+
+                if(empdata.Contains("does not exist"))
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, "empdata not  found");
+                }
+
                 else
                 {
-                    var empdata = await _employeeService.UpdateEmployee(empdto);
                     return StatusCode(StatusCodes.Status200OK, empdata);
                 }
             }

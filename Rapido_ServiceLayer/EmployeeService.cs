@@ -36,10 +36,10 @@ namespace Rapido_ServiceLayer
 
         }
 
-        public async Task<bool> DeleteEmployeeById(int empid)
+        public async Task<string> DeleteEmployeeById(int empid)
         {
-            await _employeeRepository.DeleteEmployeeById(empid);
-            return true;
+          var result= await _employeeRepository.DeleteEmployeeById(empid);
+            return result;
 
 
         }
@@ -60,12 +60,12 @@ namespace Rapido_ServiceLayer
 
         }
 
-        public async Task<bool> UpdateEmployee(EmployeeDto empdetail)
+        public async Task<string> UpdateEmployee(EmployeeDto empdetail)
         {
             Employee emp = new Employee();
             _mapper.Map(empdetail, emp);
-            await _employeeRepository.UpdateEmployee(emp);
-            return true;
+          var result=  await _employeeRepository.UpdateEmployee(emp);
+            return result;
 
         }
     }

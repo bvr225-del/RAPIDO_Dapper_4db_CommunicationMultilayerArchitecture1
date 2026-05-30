@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Rapido_BusinessEntities.Dtos;
 using Rapido_BusinessEntities.Interfaces;
+using Rapido_BusinessEntities.Models;
 
 namespace RAPIDO_API.Controllers
 {
@@ -47,7 +48,7 @@ namespace RAPIDO_API.Controllers
             {
                 var orderData = await _ordersService.DeleteOrderById(orderid);
 
-                if (orderData == null)
+                if (orderData.Contains("does not exist"))
                 {//in db if you get empty data we need to retrun this statuscode:Status404NotFound
                     return StatusCode(StatusCodes.Status404NotFound, "orderData not  found");
                 }
@@ -105,12 +106,19 @@ namespace RAPIDO_API.Controllers
         [Route("UpdateOrder")]
         public async Task<IActionResult> put([FromBody] OrdersDto orderdto)
         {
+            if (orderdto == null || orderdto.orderid <= 0)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest,"Invalid Order Data");
+            }
+
             try
             {
-                if (!ModelState.IsValid)
-                {
+                var result = await _ordersService.UpdateOrder(orderdto);
 
-                    return StatusCode(StatusCodes.Status400BadRequest, ModelState);
+                // Check if order not found
+                if (result.Contains("does not exist"))
+                {
+                    return StatusCode(StatusCodes.Status404NotFound,"data not found");
                 }
                 else
                 {
